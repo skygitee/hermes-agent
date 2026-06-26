@@ -97,52 +97,52 @@ jobs:
   # ────────────────────────────────────────────────────────
   # Linux (AppImage + deb + rpm)
   # ────────────────────────────────────────────────────────
-  linux:
-    runs-on: ubuntu-latest
-    timeout-minutes: 60
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.inputs.ref || github.ref }}
-          fetch-depth: 0
+  # linux:
+  #   runs-on: ubuntu-latest
+  #   timeout-minutes: 60
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #       with:
+  #         ref: ${{ github.event.inputs.ref || github.ref }}
+  #         fetch-depth: 0
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
+  #     - uses: actions/setup-node@v4
+  #       with:
+  #         node-version: 22
 
-      - name: Install system deps (for AppImage/deb/rpm)
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y --no-install-recommends \
-            libarchive-tools rpm fakeroot dpkg
+  #     - name: Install system deps (for AppImage/deb/rpm)
+  #       run: |
+  #         sudo apt-get update
+  #         sudo apt-get install -y --no-install-recommends \
+  #           libarchive-tools rpm fakeroot dpkg
 
-      - name: Install workspace deps
-        run: npm ci
+  #     - name: Install workspace deps
+  #       run: npm ci
 
-      - name: Build & package (AppImage + deb + rpm)
-        working-directory: apps/desktop
-        run: npm run dist:linux
+  #     - name: Build & package (AppImage + deb + rpm)
+  #       working-directory: apps/desktop
+  #       run: npm run dist:linux
 
-      - name: Upload AppImage
-        uses: actions/upload-artifact@v4
-        with:
-          name: Hermes-Linux-AppImage-${{ github.sha }}
-          path: apps/desktop/release/Hermes-*.AppImage
-          retention-days: 30
+  #     - name: Upload AppImage
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: Hermes-Linux-AppImage-${{ github.sha }}
+  #         path: apps/desktop/release/Hermes-*.AppImage
+  #         retention-days: 30
 
-      - name: Upload deb
-        uses: actions/upload-artifact@v4
-        with:
-          name: Hermes-Linux-deb-${{ github.sha }}
-          path: apps/desktop/release/Hermes-*.deb
-          retention-days: 30
+  #     - name: Upload deb
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: Hermes-Linux-deb-${{ github.sha }}
+  #         path: apps/desktop/release/Hermes-*.deb
+  #         retention-days: 30
 
-      - name: Upload rpm
-        uses: actions/upload-artifact@v4
-        with:
-          name: Hermes-Linux-rpm-${{ github.sha }}
-          path: apps/desktop/release/Hermes-*.rpm
-          retention-days: 30
+  #     - name: Upload rpm
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: Hermes-Linux-rpm-${{ github.sha }}
+  #         path: apps/desktop/release/Hermes-*.rpm
+  #         retention-days: 30
 
   # ────────────────────────────────────────────────────────
   # 打 tag 时自动创建 GitHub Release（draft）
