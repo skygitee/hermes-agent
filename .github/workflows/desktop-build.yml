@@ -32,8 +32,8 @@ jobs:
         with:
           node-version: 22
 
-      - name: Install root deps
-        run: npm ci --workspaces=false
+      - name: Install workspace deps
+        run: npm ci
 
       - name: Build & package (DMG + zip)
         working-directory: apps/desktop
@@ -73,8 +73,8 @@ jobs:
         with:
           node-version: 22
 
-      - name: Install root deps
-        run: npm ci --workspaces=false
+      - name: Install workspace deps
+        run: npm ci
 
       - name: Build & package (NSIS + MSI)
         working-directory: apps/desktop
@@ -116,8 +116,8 @@ jobs:
           sudo apt-get install -y --no-install-recommends \
             libarchive-tools rpm fakeroot dpkg
 
-      - name: Install root deps
-        run: npm ci --workspaces=false
+      - name: Install workspace deps
+        run: npm ci
 
       - name: Build & package (AppImage + deb + rpm)
         working-directory: apps/desktop
