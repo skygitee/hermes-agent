@@ -141,16 +141,24 @@ jobs:
         run: |
           Write-Host "===== Windows artifact sizes ====="
 
-          $files = Get-ChildItem -Path 'apps/desktop/release' -Include *.exe,*.msi -File -ErrorAction SilentlyContinue
-          foreach ($f in $files) {
-            $mb = [math]::Round($f.Length/1MB, 1)
-            Write-Host ("  {0,-50}  {1,12:N0} bytes  ({2,6:N1} MB)" -f $f.Name, $f.Length, $mb)
-          }
+          $releaseDir = 'apps/desktop/release'
+          if (-not (Test-Path -LiteralPath $releaseDir)) {
+            Write-Host "::warning::Release directory not found: $releaseDir"
+          } else {
+            $files = @()
+            foreach ($ext in @('*.exe', '*.msi')) {
+              $files += Get-ChildItem -LiteralPath $releaseDir -Filter $ext -File -ErrorAction SilentlyContinue
+            }
+            foreach ($f in $files) {
+              $mb = [math]::Round($f.Length/1MB, 1)
+              Write-Host ("  {0,-50}  {1,12:N0} bytes  ({2,6:N1} MB)" -f $f.Name, $f.Length, $mb)
+            }
 
-          $totalBytes = ($files | Measure-Object -Property Length -Sum).Sum
-          if ($null -eq $totalBytes) { $totalBytes = 0 }
-          $totalMb = [math]::Round($totalBytes/1MB, 1)
-          Write-Host "TOTAL=$totalMb MB"
+            $totalBytes = ($files | Measure-Object -Property Length -Sum).Sum
+            if ($null -eq $totalBytes) { $totalBytes = 0 }
+            $totalMb = [math]::Round($totalBytes/1MB, 1)
+            Write-Host "TOTAL=$totalMb MB"
+          }
 
           $baseline = $env:BASELINE_DMG_MB
           if (-not [string]::IsNullOrWhiteSpace($baseline)) {
